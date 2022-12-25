@@ -1,0 +1,32 @@
+image:
+  repository: 5200710/hive
+  tag: 3.1.3-postgresql-metastore
+#  pullPolicy: Always
+
+resources: { }
+
+# Also deploy an internal postgresql hive-metastore requirement
+hive-metastore:
+  enabled: true
+  postgresql:
+    enabled: true
+    host: ~
+    port: 5432
+    auth:
+      database: "metastore"
+      username: "hive"
+      password: "hive"
+
+conf:
+  logLevel: INFO
+  hiveSite:
+    hive.server2.enable.doAs: false
+  # if not set, default hive.metastore.uris is default uri from metastore requirement:
+  # "thrift://{{.Release.Name}}-metastore:9083"
+  # hive.metastore.warehouse.dir: hdfs://my-hdfs.bigdata.svc.cluster.local:9820/user/hive/warehouse
+  hdfsAdminUser: hdfs
+  # if not set, default is configMap from hdfs requirement {{.Release.Name}}-hdfs-hadoop
+  hadoopConfigMap: ~
+  coreSite:
+    fs.defaultFS: hdfs://hadoop-hadoop-hdfs-nn.confluent.svc.cluster.local:9000
+  
